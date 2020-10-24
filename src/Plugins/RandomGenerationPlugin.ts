@@ -3,18 +3,12 @@ import * as Phaser from "phaser";
 import { Shape, shapes } from "../Model";
 import * as config from "../config";
 
-export class RandomGenerationPlugin extends Phaser.Scenes.ScenePlugin {
+export class RandomGenerationLogic {
   /** Implements the Tetris Random Generation mechanism */
   nextQueue: Shape[] = [];
 
-  // noinspection JSUnusedGlobalSymbols
-  boot() {
-    const eventEmitter = this.systems.events;
-    eventEmitter.on("destroy", this.destroy, this);
-  }
-
   private extendQueueAsNeeded() {
-    while (this.nextQueue.length < config.nextQueueLength) {
+    if (this.nextQueue.length === 0) {
       this.extendQueue();
     }
   }
@@ -28,14 +22,12 @@ export class RandomGenerationPlugin extends Phaser.Scenes.ScenePlugin {
       [bag[i], bag[j]] = [bag[j], bag[i]];
     }
 
-    this.nextQueue = this.nextQueue.concat(...bag);
+    this.nextQueue = bag;
   }
 
   shift(): Shape {
     this.extendQueueAsNeeded();
-    const next = this.nextQueue.shift()!;
-    this.extendQueueAsNeeded();
-    return next;
+    return this.nextQueue.shift()!;
   }
 
   shiftMany(n: number): Shape[] {
@@ -48,5 +40,31 @@ export class RandomGenerationPlugin extends Phaser.Scenes.ScenePlugin {
 
   destroy() {
     this.nextQueue = [];
+  }
+
+  reset() {
+    this.nextQueue = [];
+  }
+}
+
+export class RandomGenerationPlugin extends Phaser.Scenes.ScenePlugin {
+  logic = new RandomGenerationLogic();
+
+  // noinspection JSUnusedGlobalSymbols
+  boot() {
+    const eventEmitter = this.systems.events;
+    eventEmitter.on("destroy", this.logic.destroy, this);
+  }
+
+  shift() {
+    return this.logic.shift();
+  }
+
+  shiftMany(n: number) {
+    return this.logic.shiftMany(n);
+  }
+
+  reset() {
+    this.logic.reset();
   }
 }

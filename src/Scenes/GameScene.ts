@@ -95,12 +95,14 @@ export class GameScene extends Phaser.Scene {
     );
     // TODO there should be a better way to initialize a plugin
     this.tetrominoData.preCreate();
+    this.randomGeneration.reset();
 
     // UI elements
     this.createDecorations();
     this.createScore();
     this.createFlash();
     this.createKeys();
+    this.updateNextQueue();
 
     // Cleanup when leaving the scene
     this.events.on("shutdown", this.shutdown, this);
@@ -252,12 +254,9 @@ export class GameScene extends Phaser.Scene {
   }
 
   nextTetromino(source: NextTetrominoSource = "random") {
-    this.randomGeneration.shift();
-
     let tetromino;
     switch (source) {
       case "random":
-        this.updateNextQueue();
         tetromino = this.gameData.shiftNextQueue();
         this.updateNextQueue();
         if (this.tetrominoInPlayGameObject) {
@@ -303,16 +302,15 @@ export class GameScene extends Phaser.Scene {
 
   updateNextQueue() {
     const queueLengthBeforeFetch = this.gameData.nextQueue.length;
-    const nextShapes = this.randomGeneration.shiftMany(
-      config.nextQueueLength - queueLengthBeforeFetch
+    const toFetch = config.nextQueueLength - queueLengthBeforeFetch;
+
+    const nextShapes = this.randomGeneration.shiftMany(toFetch);
+
+    this.gameData.nextQueue.push(
+      ...nextShapes.map((shape) =>
+        this.gameData.matrix.tetromino(this.tetrominoData.getData(shape))
+      )
     );
-    for (let i = 0; i < nextShapes.length; i++) {
-      this.gameData.nextQueue.push(
-        this.gameData.matrix.tetromino(
-          this.tetrominoData.getData(nextShapes[i])
-        )
-      );
-    }
 
     const next = this.gameData.nextQueue[0];
     const bounds = next.bounds;
