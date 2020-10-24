@@ -53,7 +53,7 @@ export class LeaderboardPlugin extends Phaser.Plugins.BasePlugin {
     const doc = this.collection.doc(name);
 
     const oldData = await doc.get();
-    if (oldData?.data().score < scoring.score) {
+    if (!oldData.exists || oldData.data().score < scoring.score) {
       await doc.set({
         score: scoring.score,
         level: scoring.level,
