@@ -5,5 +5,6 @@ declare namespace Phaser {
     timer: import("./Plugins").TimerPlugin;
     randomGeneration: import("./Plugins").RandomGenerationPlugin;
     keyboardUtils: import("./Plugins").KeyboardUtilsPlugin;
+    touchControls: import("./Plugins").TouchControlsPlugin;
   }
 }

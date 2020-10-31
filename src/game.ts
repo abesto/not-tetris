@@ -13,6 +13,7 @@ import {
   RandomGenerationPlugin,
   KeyboardUtilsPlugin,
   LeaderboardPlugin,
+  TouchControlsPlugin,
 } from "./Plugins";
 import { DebugScene, GameScene, LeaderboardScene, MenuScene } from "./Scenes";
 import { layout } from "./Layout";
@@ -77,6 +78,12 @@ function createGame(): Phaser.Game {
           plugin: RandomGenerationPlugin,
           start: true,
           mapping: "randomGeneration",
+        },
+        {
+          key: "TouchControlsPlugin",
+          plugin: TouchControlsPlugin,
+          start: true,
+          mapping: "touchControls",
         },
       ],
     },

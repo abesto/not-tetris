@@ -150,14 +150,14 @@ export class MenuScene extends Phaser.Scene {
 
   private createControls() {
     this.controlsObject = this.add.text(0, 0, [
-      "CONTROLS",
-      "Move left ............... Left arrow  .... Numpad 4",
-      "Move right .............. Right arrow .... Numpad 6",
-      "Rotate clockwise ........ X, Up arrow .... Numpad 1/5/9",
-      "Rotate counter-clockwise  Z, Y ........... Numpad 3/7",
-      "Hold .................... C .............. Numpad 0",
-      "Soft drop ............... Down arrow ..... Numpad 2",
-      "Hard drop ............... Space .......... Numpad 8",
+      "CONTROL        KEYBOARD        NUMPAD    TOUCH",
+      "Move left .... Left arrow  ..... 4 ......Drag left",
+      "Move right ... Right arrow ..... 6 ......Drag right",
+      "Rotate CW .... X, Up arrow ... 1/5/9 ... Tap right side",
+      "Rotate CCW ... Z, Y ........... 3/7 .... Tap left side",
+      "Hold ..........C ............... 0 ..... Tap hold area",
+      "Soft drop .... Down arrow ...... 2 ..... Drag down",
+      "Hard drop .... Space ........... 8 ..... Flick down",
     ]);
     this.controlsObject.setPosition(
       (layout.right.pixelHigh - this.controlsObject.displayWidth) / 2,

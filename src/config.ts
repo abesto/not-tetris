@@ -1,6 +1,22 @@
 import * as Phaser from "phaser";
 
-export const fps = 60;
+const urlParams = new URLSearchParams(window.location.search);
+
+function urlInt(key: string): number | null {
+  if (urlParams.has(key)) {
+    return parseInt(urlParams.get(key)!, 10);
+  }
+  return null;
+}
+
+function urlFloat(key: string): number | null {
+  if (urlParams.has(key)) {
+    return parseFloat(urlParams.get(key)!);
+  }
+  return null;
+}
+
+export const fps = urlInt("fps") || 60;
 export const frameTime = (1 / fps) * 1000;
 
 export const rows = 40;
@@ -32,7 +48,7 @@ export const minoSideColorStep = 30;
 
 export const flashLength = 2000;
 
-export const leaderboardNameLimit = 30;
+export const leaderboardNameLimit = 10;
 
 // 2009 Tetris Design Guideline, 4.1: Table of Basic Controls
 const KeyCodes = Phaser.Input.Keyboard.KeyCodes;
@@ -62,3 +78,8 @@ export const keymap = {
   ],
   pause: [KeyCodes.F1, KeyCodes.ESC],
 };
+export type Action = keyof typeof keymap;
+
+// Touch controls
+export const tapDuration = 125; // Android default I think
+export const hardDropCellThreshold = urlFloat("hardDropCellThreshold") || 2.5;

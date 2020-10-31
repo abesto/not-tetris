@@ -1,7 +1,9 @@
 import * as Phaser from "phaser";
-import { Scoring } from "../Model";
 
-const firebase = require("firebase");
+import { Scoring } from "../Model";
+import * as config from "../config";
+
+const firebase = require("firebase/app");
 require("firebase/firestore");
 
 export type LeaderboardEntry = {
@@ -34,10 +36,9 @@ export class LeaderboardPlugin extends Phaser.Plugins.BasePlugin {
 
   async load(): Promise<Leaderboard> {
     await this.initialized;
-    const db = firebase.firestore();
     const snapshot = await this.collection
       .orderBy("score", "desc")
-      .limit(10)
+      .limit(config.leaderboardNameLimit)
       .get();
     return snapshot.docs.map((entry) => {
       const data = entry.data();

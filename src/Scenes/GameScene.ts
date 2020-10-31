@@ -11,6 +11,7 @@ import {
 import * as config from "../config";
 import { layout } from "../Layout";
 import { formatTime } from "../utils";
+import { Action } from "../config";
 
 type Command = "softDrop" | "hardDrop" | "rotateCW" | "rotateCCW" | "hold";
 type NextTetrominoSource = "random" | "hold";
@@ -396,6 +397,14 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
+  inputActive(input: Action) {
+    return (
+      (input in this.keys &&
+        this.keyboardUtils.anyJustDown(this.keys[input])) ||
+      this.touchControls.action === input
+    );
+  }
+
   createScore() {
     this.scoreGameObject = this.add
       .text(
@@ -494,7 +503,7 @@ export class GameScene extends Phaser.Scene {
 
   handleMoveInput(time: number, delta: number): boolean {
     this.tetrisMovement.update(time, delta);
-    const movement = this.tetrisMovement.movement;
+    const movement = this.tetrisMovement.movement + this.touchControls.movement;
     if (
       movement !== 0 &&
       this.gameData.tetrominoInPlayModel!.canMoveBy(movement, 0)
@@ -506,7 +515,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   handleSoftDropInput() {
-    if (this.keyboardUtils.anyDown(this.keys.softDrop)) {
+    if (this.inputActive("softDrop")) {
       this.gameData.fallTimer.setInterval(this.gameData.softDropSpeed, true);
     } else {
       this.gameData.fallTimer.setInterval(this.gameData.fallSpeed);
@@ -514,7 +523,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   handleHardDropInput(): boolean {
-    if (this.keyboardUtils.anyJustDown(this.keys.hardDrop)) {
+    if (this.inputActive("hardDrop")) {
       let linesDropped = 0;
       while (this.gameData.tetrominoInPlayModel!.canMoveBy(0, -1)) {
         this.gameData.tetrominoInPlayModel!.moveBy(0, -1);
@@ -549,16 +558,16 @@ export class GameScene extends Phaser.Scene {
   }
 
   handleRotateInput(): boolean {
-    if (this.keyboardUtils.anyJustDown(this.keys.rotateCW)) {
+    if (this.inputActive("rotateCW")) {
       return this.gameData.tetrominoInPlayModel!.rotate(1);
-    } else if (this.keyboardUtils.anyJustDown(this.keys.rotateCCW)) {
+    } else if (this.inputActive("rotateCCW")) {
       return this.gameData.tetrominoInPlayModel!.rotate(-1);
     }
     return false;
   }
 
   handleHoldInput(): boolean {
-    if (!this.keyboardUtils.anyJustDown(this.keys.hold)) {
+    if (!this.inputActive("hold")) {
       return false;
     }
 
