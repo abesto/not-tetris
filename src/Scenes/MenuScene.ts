@@ -66,6 +66,7 @@ export class MenuScene extends Phaser.Scene {
           { x: 0, y, text: `${padding}${item.label}${padding}`, fontSize: 15 },
           false
         )
+        .setPadding(0, 10, 0, 10)
         .setAlign("center");
       y += text.displayHeight;
       this.menuObjects.push(text);
@@ -132,10 +133,16 @@ export class MenuScene extends Phaser.Scene {
 
   private updateActiveMenuItem() {
     for (let i = 0; i < this.menuObjects.length; i++) {
-      if (this.activeMenu === i) {
-        this.menuObjects[i].setBackgroundColor("green").setFontStyle("bold");
-      } else {
-        this.menuObjects[i].setBackgroundColor("black").setFontStyle("normal");
+      try {
+        if (this.activeMenu === i) {
+          this.menuObjects[i].setBackgroundColor("green").setFontStyle("bold");
+        } else {
+          this.menuObjects[i]
+            .setBackgroundColor("black")
+            .setFontStyle("normal");
+        }
+      } catch (e) {
+        // This blows up on mobile during shutdown / transition-out. shrug
       }
     }
   }
